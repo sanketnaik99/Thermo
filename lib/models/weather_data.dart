@@ -13,9 +13,11 @@ class WeatherData {
       city: json['name'],
       currentWeather: CurrentWeatherData(
         datetime: DateFormat('EEEE, d MMMM')
-            .format(DateTime.fromMicrosecondsSinceEpoch(json['dt'] * 1000)),
-        sunrise: json['sys']['sunrise'],
-        sunset: json['sys']['sunset'],
+            .format(DateTime.fromMillisecondsSinceEpoch(json['dt'] * 1000)),
+        sunrise: DateFormat('HH:mm').format(
+            DateTime.fromMillisecondsSinceEpoch(json['sys']['sunrise'] * 1000)),
+        sunset: DateFormat('HH:mm').format(
+            DateTime.fromMillisecondsSinceEpoch(json['sys']['sunset'] * 1000)),
         current: json['main']['temp'],
         feelsLike: json['main']['feels_like'],
         minTemp: json['main']['temp_min'],

@@ -1,3 +1,4 @@
+import 'package:intl/intl.dart';
 import 'package:weather_app/helpers/icon_helper.dart';
 import 'package:weather_app/models/current_weather_data.dart';
 
@@ -8,7 +9,9 @@ class ForecastListHelper {
     forecasts.forEach((item) {
       forecastList.add(CurrentWeatherData(
         icon: IconHelper().getIconLocation(item['weather'][0]['main']),
-        current: ((item['temp']['min'] + item['temp']['max']) / 2),
+        datetime: DateFormat('d/M')
+            .format(DateTime.fromMillisecondsSinceEpoch(item['dt'] * 1000)),
+        current: item['temp']['day'],
         minTemp: item['temp']['min'],
         maxTemp: item['temp']['max'],
       ));

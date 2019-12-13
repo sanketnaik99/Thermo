@@ -1,7 +1,7 @@
 class CurrentWeatherData {
   final String datetime;
-  final int sunrise;
-  final int sunset;
+  final String sunrise;
+  final String sunset;
   final double current;
   final double feelsLike;
   final double minTemp;
