@@ -24,28 +24,28 @@ class _HomeScreenState extends State<HomeScreen> {
   String sunset;
 
   _fetchWeatherData() async {
-    Position position = await Geolocator().getCurrentPosition(desiredAccuracy: LocationAccuracy.medium);
+    Position position = await Geolocator()
+        .getCurrentPosition(desiredAccuracy: LocationAccuracy.medium);
     print(position);
     setState(() {
       latitude = position.latitude;
       longitude = position.longitude;
     });
 
-    http.Response response =
-        await http.get('https://api.openweathermap.org/data/2.5/weather?lat=$latitude&lon=$longitude&appid=e9a62ba05befddcb4097d2a5dcb9b42e');
+    http.Response response = await http.get(
+        'https://api.openweathermap.org/data/2.5/weather?lat=$latitude&lon=$longitude&appid=e9a62ba05befddcb4097d2a5dcb9b42e');
     setState(() {
       data = WeatherData.fromJson(json.decode(response.body));
 
-      DateTime time = new DateTime.fromMillisecondsSinceEpoch(data.currentWeather.datetime * 1000);
-      date = DateFormat('EEEE, d MMMM').format(time);
-
-      sunrise = DateFormat('HH:mm').format(DateTime.fromMillisecondsSinceEpoch(data.currentWeather.sunrise * 1000));
-      sunset = DateFormat('HH:mm').format(DateTime.fromMillisecondsSinceEpoch(data.currentWeather.sunset * 1000));
+      sunrise = DateFormat('HH:mm').format(DateTime.fromMillisecondsSinceEpoch(
+          data.currentWeather.sunrise * 1000));
+      sunset = DateFormat('HH:mm').format(DateTime.fromMillisecondsSinceEpoch(
+          data.currentWeather.sunset * 1000));
     });
     print('CITY: ${data.city} Status: ${data.currentWeather.icon}');
 
-    http.Response forecast =
-        await http.get('https://api.openweathermap.org/data/2.5/forecast/daily?lat=$latitude&lon=$longitude&appid=e9a62ba05befddcb4097d2a5dcb9b42e');
+    http.Response forecast = await http.get(
+        'https://api.openweathermap.org/data/2.5/forecast/daily?lat=$latitude&lon=$longitude&appid=e9a62ba05befddcb4097d2a5dcb9b42e');
     forecastData = ForecastData.fromJson(json.decode(forecast.body));
     print(forecastData.forecast.length);
   }
@@ -92,14 +92,15 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                       Text(
-                        '${date.toString()}',
+                        '${data.currentWeather.datetime}',
                         style: kCommonTextStyle.copyWith(
                           fontSize: 24.0,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 30.0),
+                        padding:
+                            const EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 30.0),
                         child: Container(
                           width: 350.0,
                           height: 6.0,
@@ -121,7 +122,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         width: 250.0,
                       ),
                       Padding(
-                        padding: const EdgeInsets.fromLTRB(10.0, 10.0, 0.0, 0.0),
+                        padding:
+                            const EdgeInsets.fromLTRB(10.0, 10.0, 0.0, 0.0),
                         child: Text(
                           '${((data.currentWeather.current) - 273).floor()}°C',
                           style: kCommonTextStyle.copyWith(
@@ -131,7 +133,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 40.0),
+                        padding:
+                            const EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 40.0),
                         child: Container(
                           width: 200.0,
                           height: 6.0,
@@ -151,7 +154,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           children: <Widget>[
                             DetailRow(
                               title: 'Feels Like',
-                              value: '${(data.currentWeather.feelsLike - 273).floor()}°C',
+                              value:
+                                  '${(data.currentWeather.feelsLike - 273).floor()}°C',
                             ),
                             DetailRow(
                               title: 'Sunrise',
@@ -167,7 +171,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                             DetailRow(
                               title: 'Visibility',
-                              value: '${(data.currentWeather.visibility / 1000).floorToDouble()} Km',
+                              value:
+                                  '${(data.currentWeather.visibility / 1000).floorToDouble()} Km',
                             )
                           ],
                         ),

@@ -1,5 +1,5 @@
 class CurrentWeatherData {
-  final int datetime;
+  final String datetime;
   final int sunrise;
   final int sunset;
   final double current;

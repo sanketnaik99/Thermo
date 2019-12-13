@@ -1,3 +1,4 @@
+import 'package:intl/intl.dart';
 import 'package:weather_app/helpers/icon_helper.dart';
 import 'package:weather_app/models/current_weather_data.dart';
 
@@ -11,7 +12,8 @@ class WeatherData {
     return WeatherData(
       city: json['name'],
       currentWeather: CurrentWeatherData(
-        datetime: json['dt'],
+        datetime: DateFormat('EEEE, d MMMM')
+            .format(DateTime.fromMicrosecondsSinceEpoch(json['dt'] * 1000)),
         sunrise: json['sys']['sunrise'],
         sunset: json['sys']['sunset'],
         current: json['main']['temp'],
