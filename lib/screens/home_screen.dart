@@ -1,10 +1,14 @@
 import 'dart:convert';
-
+import 'package:advertising_id/advertising_id.dart';
+import 'package:facebook_audience_network/ad/ad_banner.dart';
+import 'package:facebook_audience_network/facebook_audience_network.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:weather_app/components/detail_row.dart';
 import 'package:weather_app/components/details_table.dart';
 import 'package:weather_app/components/forecast_info.dart';
@@ -53,6 +57,12 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     _fetchWeatherData();
+    FacebookAudienceNetwork.init(testingId: '');
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
@@ -69,6 +79,32 @@ class _HomeScreenState extends State<HomeScreen> {
                     children: <Widget>[
                       WeatherInfo(data: data),
                       DetailsTable(data: data),
+                      Padding(
+                        padding:
+                            const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 10.0),
+                        child: Container(
+//                          child: FacebookBannerAd(
+//                            placementId: '1213934525660668_1213935972327190',
+//                            bannerSize: BannerSize.STANDARD,
+//                            listener: (result, value) {
+//                              switch (result) {
+//                                case BannerAdResult.ERROR:
+//                                  print("Error: $value");
+//                                  break;
+//                                case BannerAdResult.LOADED:
+//                                  print("Loaded: $value");
+//                                  break;
+//                                case BannerAdResult.CLICKED:
+//                                  print("Clicked: $value");
+//                                  break;
+//                                case BannerAdResult.LOGGING_IMPRESSION:
+//                                  print("Logging Impression: $value");
+//                                  break;
+//                              }
+//                            },
+//                          ),
+                            ),
+                      ),
                       Padding(
                         padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 20.0),
                         child: Text(
@@ -90,9 +126,55 @@ class _HomeScreenState extends State<HomeScreen> {
                                 size: 20.0,
                               ),
                       ),
-                      SizedBox(
-                        height: 20.0,
-                      )
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: RichText(
+                          text: TextSpan(
+                            children: <TextSpan>[
+                              TextSpan(
+                                text: 'Icons made by ',
+                                style: kCommonTextStyle.copyWith(
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 11.0,
+                                ),
+                              ),
+                              TextSpan(
+                                text: 'Freepik ',
+                                style: kCommonTextStyle.copyWith(
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 11.0,
+                                ),
+                                recognizer: new TapGestureRecognizer()
+                                  ..onTap = () {
+                                    launch(
+                                        'https://www.flaticon.com/authors/freepik',
+                                        forceSafariVC: false);
+                                  },
+                              ),
+                              TextSpan(
+                                text: 'from ',
+                                style: kCommonTextStyle.copyWith(
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 11.0,
+                                ),
+                              ),
+                              TextSpan(
+                                text: 'www.flaticon.com',
+                                style: kCommonTextStyle.copyWith(
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 11.0,
+                                ),
+                                recognizer: new TapGestureRecognizer()
+                                  ..onTap = () {
+                                    launch(
+                                        'https://www.flaticon.com/authors/freepik',
+                                        forceSafariVC: false);
+                                  },
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ),

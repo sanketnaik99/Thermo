@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:weather_app/components/minmax_row.dart';
 import 'package:weather_app/constants.dart';
@@ -26,7 +27,7 @@ class WeatherInfo extends StatelessWidget {
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Text(
+                child: AutoSizeText(
                   '${data.city}',
                   style: kCommonTextStyle.copyWith(
                     fontSize: 50.0,
