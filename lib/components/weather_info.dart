@@ -1,6 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:weather_app/components/minmax_row.dart';
 import 'package:weather_app/constants.dart';
 import 'package:weather_app/models/weather_data.dart';
 
@@ -16,37 +15,18 @@ class WeatherInfo extends StatelessWidget {
     return Column(
       children: <Widget>[
         Padding(
-          padding: const EdgeInsets.fromLTRB(0.0, 20.0, 0.0, 0.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Icon(
-                Icons.location_on,
-                size: 35.0,
-                color: kAlternateLightColor,
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: AutoSizeText(
-                  '${data.city}',
-                  style: kCommonTextStyle.copyWith(
-                    fontSize: 50.0,
-                    fontWeight: FontWeight.w900,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-        Text(
-          '${data.currentWeather.datetime}',
-          style: kCommonTextStyle.copyWith(
-            fontSize: 24.0,
-            fontWeight: FontWeight.w500,
+          padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 0.0),
+          child: AutoSizeText(
+            '${data.city}',
+            maxLines: 1,
+            style: kCommonTextStyle.copyWith(
+              fontWeight: FontWeight.w900,
+              fontSize: 50.0,
+            ),
           ),
         ),
         Padding(
-          padding: const EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 30.0),
+          padding: const EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 5.0),
           child: Container(
             width: 350.0,
             height: 6.0,
@@ -54,7 +34,18 @@ class WeatherInfo extends StatelessWidget {
           ),
         ),
         Padding(
-          padding: const EdgeInsets.fromLTRB(0.0, 50.0, 0.0, 0.0),
+          padding: const EdgeInsets.all(8.0),
+          child: Text(
+            'Updated at ${data.updated} ',
+            style: kCommonTextStyle.copyWith(
+              color: kAlternateLightColor,
+              fontSize: 20.0,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(0.0, 20.0, 0.0, 0.0),
           child: Text(
             '${data.currentWeather.title}',
             style: kCommonTextStyle.copyWith(

@@ -43,8 +43,7 @@ class DetailsTable extends StatelessWidget {
               ),
               DetailRow(
                 title: 'Visibility',
-                value:
-                    '${(data.currentWeather.visibility / 1000).floorToDouble()} Km',
+                value: data.currentWeather.visibility == 0.0 ? "Unknown" : '${(data.currentWeather.visibility / 1000).floorToDouble()} Km',
               )
             ],
           ),

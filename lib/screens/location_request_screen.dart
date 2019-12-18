@@ -1,17 +1,44 @@
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:weather_app/constants.dart';
 
-class LocationRequestScreen extends StatelessWidget {
+class LocationRequestScreen extends StatefulWidget {
+  @override
+  _LocationRequestScreenState createState() => _LocationRequestScreenState();
+}
+
+class _LocationRequestScreenState extends State<LocationRequestScreen> {
+  bool isLoading = false;
+
   Future<bool> _getPermission() async {
-    Position position = await Geolocator().getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-    print(position);
-    GeolocationStatus status = await Geolocator().checkGeolocationPermissionStatus();
-    if (status == GeolocationStatus.granted) {
-      return true;
+    setState(() {
+      isLoading = true;
+    });
+    try {
+      Position position = await Geolocator().getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+      print(position);
+      GeolocationStatus status = await Geolocator().checkGeolocationPermissionStatus();
+      if (status == GeolocationStatus.granted) {
+        return true;
+      } else {
+        setState(() {
+          isLoading = false;
+        });
+        return false;
+      }
+    } on PlatformException catch (e) {
+      print("catch");
+      print(e.code);
+      if (e.code == "PERMISSION_DENIED") {
+        setState(() {
+          isLoading = false;
+        });
+      }
+      return false;
     }
-    return false;
   }
 
   @override
@@ -59,22 +86,30 @@ class LocationRequestScreen extends StatelessWidget {
                     textAlign: TextAlign.center,
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: RaisedButton(
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
-                    textColor: kAlternateLightColor,
-                    padding: const EdgeInsets.all(15.0),
-                    color: kPrimaryColor,
-                    child: Text('Grant Permission', style: TextStyle(fontSize: 20)),
-                    onPressed: () async {
-                      bool status = await _getPermission();
-                      if (status = true) {
-                        Navigator.pushReplacementNamed(context, 'home');
-                      }
-                    },
-                  ),
-                )
+                isLoading
+                    ? Padding(
+                        padding: const EdgeInsets.all(32.0),
+                        child: SpinKitDoubleBounce(
+                          color: kPrimaryColor,
+                          size: 30.0,
+                        ),
+                      )
+                    : Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: RaisedButton(
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
+                          textColor: kAlternateLightColor,
+                          padding: const EdgeInsets.all(15.0),
+                          color: kPrimaryColor,
+                          child: Text('Grant Permission', style: TextStyle(fontSize: 20)),
+                          onPressed: () async {
+                            bool status = await _getPermission();
+                            if (status == true) {
+                              Navigator.pushReplacementNamed(context, 'home');
+                            }
+                          },
+                        ),
+                      )
               ],
             ),
           ],

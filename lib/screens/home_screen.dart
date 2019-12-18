@@ -1,17 +1,15 @@
 import 'dart:convert';
-import 'package:advertising_id/advertising_id.dart';
-import 'package:facebook_audience_network/ad/ad_banner.dart';
+
 import 'package:facebook_audience_network/facebook_audience_network.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
-import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:weather_app/components/detail_row.dart';
 import 'package:weather_app/components/details_table.dart';
 import 'package:weather_app/components/forecast_info.dart';
+import 'package:weather_app/components/weather_app_bar.dart';
 import 'package:weather_app/components/weather_info.dart';
 import 'package:weather_app/constants.dart';
 import 'package:weather_app/models/forecast_data.dart';
@@ -27,25 +25,30 @@ class _HomeScreenState extends State<HomeScreen> {
   WeatherData data;
   ForecastData forecastData;
   String date;
+  GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   _fetchWeatherData() async {
-    Position position = await Geolocator()
-        .getCurrentPosition(desiredAccuracy: LocationAccuracy.medium);
+    setState(() {
+      this.data = null;
+      this.forecastData = null;
+    });
+
+    Position position = await Geolocator().getCurrentPosition(desiredAccuracy: LocationAccuracy.medium);
     print(position);
     setState(() {
       latitude = position.latitude;
       longitude = position.longitude;
     });
 
-    http.Response response = await http.get(
-        'https://api.openweathermap.org/data/2.5/weather?lat=$latitude&lon=$longitude&appid=e9a62ba05befddcb4097d2a5dcb9b42e');
+    http.Response response =
+        await http.get('https://api.openweathermap.org/data/2.5/weather?lat=$latitude&lon=$longitude&appid=e9a62ba05befddcb4097d2a5dcb9b42e');
     setState(() {
       data = WeatherData.fromJson(json.decode(response.body));
     });
     print('CITY: ${data.city} Status: ${data.currentWeather.icon}');
 
-    http.Response forecast = await http.get(
-        'https://api.openweathermap.org/data/2.5/forecast/daily?lat=$latitude&lon=$longitude&appid=e9a62ba05befddcb4097d2a5dcb9b42e');
+    http.Response forecast =
+        await http.get('https://api.openweathermap.org/data/2.5/forecast/daily?lat=$latitude&lon=$longitude&appid=e9a62ba05befddcb4097d2a5dcb9b42e');
     setState(() {
       forecastData = ForecastData.fromJson(json.decode(forecast.body));
     });
@@ -69,6 +72,35 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: kBackgroundColor,
+      drawer: Drawer(
+        child: Container(
+          color: kAlternateDarkColor,
+          child: SafeArea(
+            child: Column(
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.all(15.0),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: <Widget>[
+                      IconButton(
+                        icon: Icon(
+                          Icons.add_circle,
+                          size: 30.0,
+                          color: kPrimaryColor,
+                        ),
+                        onPressed: () {},
+                      ),
+                    ],
+                  ),
+                )
+              ],
+            ),
+          ),
+        ),
+      ),
+      key: _scaffoldKey,
       body: SafeArea(
         child: data != null
             ? SizedBox(
@@ -77,33 +109,46 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
-                      WeatherInfo(data: data),
-                      DetailsTable(data: data),
+                      WeatherAppBar(
+                        openDrawer: () {
+                          _scaffoldKey.currentState.openDrawer();
+                        },
+                        data: data,
+                        refresh: () {
+                          this._fetchWeatherData();
+                        },
+                      ),
+                      WeatherInfo(
+                        data: data,
+                      ),
+                      DetailsTable(
+                        data: data,
+                      ),
                       Padding(
-                        padding:
-                            const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 10.0),
+                        padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 10.0),
                         child: Container(
-//                          child: FacebookBannerAd(
-//                            placementId: '1213934525660668_1213935972327190',
-//                            bannerSize: BannerSize.STANDARD,
-//                            listener: (result, value) {
-//                              switch (result) {
-//                                case BannerAdResult.ERROR:
-//                                  print("Error: $value");
-//                                  break;
-//                                case BannerAdResult.LOADED:
-//                                  print("Loaded: $value");
-//                                  break;
-//                                case BannerAdResult.CLICKED:
-//                                  print("Clicked: $value");
-//                                  break;
-//                                case BannerAdResult.LOGGING_IMPRESSION:
-//                                  print("Logging Impression: $value");
-//                                  break;
-//                              }
-//                            },
-//                          ),
-                            ),
+                          //TODO: REMOVE THIS BEFORE PUBLISHING
+                          child: FacebookBannerAd(
+                            placementId: '1213934525660668_1213935972327190',
+                            bannerSize: BannerSize.STANDARD,
+                            listener: (result, value) {
+                              switch (result) {
+                                case BannerAdResult.ERROR:
+                                  print("Error: $value");
+                                  break;
+                                case BannerAdResult.LOADED:
+                                  print("Loaded: $value");
+                                  break;
+                                case BannerAdResult.CLICKED:
+                                  print("Clicked: $value");
+                                  break;
+                                case BannerAdResult.LOGGING_IMPRESSION:
+                                  print("Logging Impression: $value");
+                                  break;
+                              }
+                            },
+                          ),
+                        ),
                       ),
                       Padding(
                         padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 20.0),
@@ -146,9 +191,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ),
                                 recognizer: new TapGestureRecognizer()
                                   ..onTap = () {
-                                    launch(
-                                        'https://www.flaticon.com/authors/freepik',
-                                        forceSafariVC: false);
+                                    launch('https://www.flaticon.com/authors/freepik', forceSafariVC: false);
                                   },
                               ),
                               TextSpan(
@@ -166,9 +209,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ),
                                 recognizer: new TapGestureRecognizer()
                                   ..onTap = () {
-                                    launch(
-                                        'https://www.flaticon.com/authors/freepik',
-                                        forceSafariVC: false);
+                                    launch('https://www.flaticon.com/authors/freepik', forceSafariVC: false);
                                   },
                               )
                             ],
