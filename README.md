@@ -2,7 +2,7 @@
 
 # Thermo
 
-[![Download the App](https://img.shields.io/badge/Get%20the%20App-Play%20Store-blue?style=for-the-badge&logo=Google%20Play?)](https://play.google.com/store/apps/details?id=in.theoctagon.weather)
+[![Download the App](https://img.shields.io/badge/Get%20the%20App-Play%20Store-blue?style=for-the-badge&logo=Google%20Play)](https://play.google.com/store/apps/details?id=in.theoctagon.weather)
 
 A weather app made using Flutter and the OpenWeatherMap API. The application follows minimal design principles and displays accurate weather information to the user in a neat and clean way.
 
